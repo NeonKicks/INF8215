@@ -106,8 +106,6 @@ constraint forall(i,j in 1..N)(
 solve satisfy;
 
 
-output [join("\n",[join(" - ",[show(homePositions[i]), show(homeNationalities[i]), show(homeProfessions[i]), show(homeAnimals[i]), show(homeColors[i]), show(homeDrinks[i])]) | i in 1..N])];
+output [join("\n",[join("\t",[show(homePositions[i]), show(homeNationalities[i]), show(homeProfessions[i]), show(homeAnimals[i]), show(homeColors[i]), show(homeDrinks[i])]) | i in 1..N])];
 
-output ["\n\n"];
 
-output [join(" -> ",[show(homeNationalities[i]), show(homeDrinks[i])]) if homeDrinks[i] == water | i in 1..N] ;
