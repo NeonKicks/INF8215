@@ -8,16 +8,16 @@ ask(musician, X) :-
 	read(Reply),
 	Reply = 'yes'.
 
-ask(singer, X) :-
-	format('~w is a singer? ', [X]),
+ask(X) :-
+	format('Is the person a ~w? ', [X]),
 	read(Reply),
 	Reply = 'yes'.
 
 person(X) :- politician(X).
 person(X) :- artist(X).
 
-artist(X) :- ask(singer, X), singer(X).
-artist(X) :- ask(musician, X), musician(X).
+artist(X) :- ask(singer), singer(X).
+artist(X) :- ask(musician), musician(X).
 
 politician(X) :- governs(X, Y), country(Y), ask(governs, Y).
 
