@@ -8,23 +8,22 @@ ask(X) :-
 	read(Reply),
 	Reply = 'yes'.
 
-person(X) :- politician(X).
-person(X) :- artist(X).
+person(X) :- ask_leader(X).
 
-artist(X) :- ask(singer, X), singer(X).
-artist(X) :- ask(musician, X), musician(X).
+ask_leader(X) :- ask('leader of some sorts'), leader(X).
 
-politician(X) :- governs(X, Y), country(Y), ask(governs, Y).
-
-person(X) :- ask(person, X).
-object(X) :- ask(object, X).
+leader(X) :- ask('political leader'), political_leader(X).
+leader(X) :- ask('spiritual leader'), spiritual_leader(X).
 
 %% People with precise characteristics as predicates
 political_leader(mikhail_gorbachev).
 political_leader(joseph_staline).
 political_leader(dwight_d_eisenhower).
 political_leader(richard_nixon).
-ruler(cleopatra).
+political_leader(cleopatra).
+prophet(jesus).
+prophet(moses).
+spiritual_leader(pope_francis).
 
 director(quentin_tarantino).
 actress(jennifer_lawrence).
@@ -43,10 +42,6 @@ driver(fernando_alonso).
 game_character(lara_croft).
 game_character(mario).
 movie_character(james_bond).
-
-prophet(jesus).
-prophet(moses).
-spiritual_leaderpope_francis).
 
 
 %%===================================
