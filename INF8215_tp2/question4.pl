@@ -98,26 +98,41 @@ sex(female).
 %%===================================
 %% ----- Program for object(X) ------
 %%===================================
+askobj(X) :-
+	format('Is the object ~w? ', [X]),
+	read(Reply),
+	Reply = 'yes'.
 
-Vacuum
-Computer
-Phone
-Fork
-Broom
-Cactus
-Plate
-Oven
-Range
-Coffee machine
-Toaster
-Table
-Pan
-Shampoo
-Dishwashing detergent
-Bed
-Key
-Wallet
-Backpack
-Piano
-Lamp
-Paper
+askfunction(X) :-
+	format('Does the object ~w? ', [X]),
+	read(Reply),
+	Reply = 'yes'.
+
+object(X) :- askfunction('use electricity'), electric(X).
+object(X) :- askobj('used for making food or beverages'), food(X).
+object(X) :- askobj('used to clean things'), cleaning(X).
+
+oven
+range
+coffee_machine
+toaster
+vacuum
+computer
+phone
+lamp
+
+
+shampoo
+dishwashing_detergent
+broom
+wallet
+backpack
+piano
+bed
+table
+pan
+fork
+plate
+key
+paper
+cactus
