@@ -25,11 +25,9 @@ political(X) :- political_not_1953(X).
 political_1953(X) :- political_leader_1953(X, Y), nationality(Y), ask(Y).
 political_not_1953(X) :- political_leader(X, Y), nationality(Y), ask(Y).
 
-spiritual(X) :- ask('a prophet'), spiritual_prophet(X).
-spiritual(X) :- spiritual_leader(X).
+spiritual(X) :- ask('a prophet'), spiritual_prophet(X); spiritual_leader(X).
 
-spiritual_prophet(X) :- ask('the son of Mary'), prophet(X,yes).
-spiritual_prophet(X) :- prophet(X,no).
+spiritual_prophet(X) :- ask('the son of Mary'), prophet(X,yes); prophet(X,no).
 
 
 fictional(X) :- ask('originally from a movie'), movie_character(X).
@@ -109,30 +107,76 @@ askfunction(X) :-
 	Reply = 'yes'.
 
 object(X) :- askfunction('use electricity'), electric(X).
-object(X) :- askobj('used for making food or beverages'), food(X).
 object(X) :- askobj('used to clean things'), cleaning(X).
-
-oven
-range
-coffee_machine
-toaster
-vacuum
-computer
-phone
-lamp
+object(X) :- askobj('something nearly all students have on them'), students(X).
+object(X) :- askobj('usually found in kitchen cabinets'), kitchen_obj(X).
+object(X) :- askobj('a type of furniture'), furnitures(X).
+object(X) :- askobj('a musical instrument'), instrument(X).
+object(X) :- askobj('a plant'), plant(X).
+object(X) :- askobj('a type of thin sheet'), sheet(X).
 
 
-shampoo
-dishwashing_detergent
-broom
-wallet
-backpack
-piano
-bed
-table
-pan
-fork
-plate
-key
-paper
-cactus
+electric(X) :- askobj('used for making food or beverages'), food(X).
+electric(X) :- askobj('used to clean things'), e_cleaning_device(X).
+electric(X) :- askfunction('have a screen'), screen_device(X).
+electric(X) :- askobj('used to light things'), lighting(X).
+
+food(X) :- askobj('used to cook meals'), cooking(X); not_cooking(X).
+
+cooking(X) :- askobj('used to saute or fry things'), appliance(X,yes); appliance(X,no).
+not_cooking(X) :- askfunction('prepare beverages'), small_appliance(X,yes); small_appliance(X,no).
+
+screen_device(X) :- askfunction('fit in a pocket'), screen(X,yes); screen(X,no).
+
+
+cleaning(X) :- askobj('a liquid'), cleaning_liquid(X); cleaning_device(X).
+cleaning_liquid(X) :- askfunction('clean other objects'), liquid(X,yes); liquid(X,no).
+
+students(X) :- askfunction('contain other objects'), container(X).
+students(X) :- askfunction('open things'), opener(X).
+
+container(X) :- askfunction('fit in a pocket'), contain(X,yes); contain(X,no).
+
+kitchen_obj(X) :- askobj('used for cooking'), cookware(X).
+kitchen_obj(X) :- askobj('used for eating'), eating(X).
+
+eating(X) :- askobj('cutlery'), cutlery(X).
+eating(X) :- askobj('dishware'), dishware(X).
+
+furnitures(X) :- askobj('used for sleeping'), furniture(X,yes); furniture(X,no).
+
+appliance(X) :- appliance(X,Y), boolean(Y).
+appliance(range,yes).
+appliance(oven,no).
+small_appliance(X) :- small_appliance(X,Y), boolean(Y).
+small_appliance(coffee_machine,yes).
+small_appliance(toaster,no).
+
+e_cleaning_device(vacuum).
+lighting(lamp).
+
+screen(X) :- screen(X,Y), boolean(Y).
+screen(phone,yes).
+screen(computer,no).
+
+
+liquid(dishwashing_detergent,yes).
+liquid(shampoo,no).
+cleaning_device(broom).
+
+contain(X) :- contain(X,Y), boolean(Y).
+contain(wallet,yes).
+contain(backpack,no).
+opener(key).
+
+cookware(pan).
+cutlery(fork).
+dishware(plate).
+
+furniture(X) :- furniture(X,Y), boolean(Y).
+furniture(bed,yes).
+furniture(table,no).
+
+instrument(piano).
+plant(cactus).
+sheet(paper).
