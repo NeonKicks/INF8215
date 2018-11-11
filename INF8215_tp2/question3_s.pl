@@ -14,13 +14,16 @@ prerequisite('LOG1000','LOG2410').
 prerequisite('INF1010','LOG2410').
 prerequisite('INF1010','INF2010').
 prerequisite('INF2010','INF2705').
+prerequisite('MTH1007','INF2705').
 %% x is a corequisite course for y is noted corequisite(x,y)
 corequisite('LOG2810','INF2010').
-corequisite('MTH1007','INF2705').
 corequisite('LOG2990','INF2705').
 corequisite('INF1600','INF1900').
 corequisite('INF2205','INF1900').
 corequisite('LOG1000','INF1900').
+corequisite('INF1600','INF2205').
+corequisite('INF1600','LOG1000').
+corequisite('INF2205','LOG1000').
 
 corequisites(A,B) :- corequisite(A,B).
 corequisites(A,B) :- corequisite(B,A).

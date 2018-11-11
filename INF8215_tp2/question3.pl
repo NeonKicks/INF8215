@@ -3,6 +3,7 @@
 %% x is a prerequisite course for y is noted prerequisite(x,y)
 prerequisite(null,'INF1005C').
 prerequisite(null,'INF1500').
+prerequisite(null,'MTH1007').
 prerequisite('INF1005C','INF1010').
 prerequisite('INF1005C','LOG1000').
 prerequisite('INF1005C','INF1600').
@@ -11,9 +12,10 @@ prerequisite('LOG1000','LOG2410').
 prerequisite('INF1010','LOG2410').
 prerequisite('INF1010','INF2010').
 prerequisite('INF2010','INF2705').
+prerequisite('MTH1007','INF2705').
+
 %% x is a corequisite course for y is noted corequisite(x,y)
 corequisite('LOG2810','INF2010').
-corequisite('MTH1007','INF2705').
 corequisite('LOG2990','INF2705').
 corequisite('INF1600','INF1900').
 corequisite('INF2205','INF1900').
