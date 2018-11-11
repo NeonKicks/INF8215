@@ -1,6 +1,6 @@
 %% Exercise 3
 
-%% x is a prerequisite course for y is noted prerequisite(x,y)
+%% "x is a prerequisite course for y" is noted prerequisite(x,y)
 prerequisite(null,'INF1005C').
 prerequisite(null,'INF1500').
 prerequisite(null,'MTH1007').
@@ -14,7 +14,7 @@ prerequisite('INF1010','INF2010').
 prerequisite('INF2010','INF2705').
 prerequisite('MTH1007','INF2705').
 
-%% x is a corequisite course for y is noted corequisite(x,y)
+%% "x is a corequisite course for y" is noted corequisite(x,y)
 corequisite('LOG2810','INF2010').
 corequisite('LOG2990','INF2705').
 corequisite('INF1600','INF1900').
