@@ -71,8 +71,14 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
         
 
-        # X_bias =         
-        # self.theta_  = 
+        X_bias = np.ones((X.shape[0], X.shape[1]+1))
+        X_bias[:,:-1] = X
+
+
+        self.theta_= np.random.rand(self.nb_feature + 1, self.nb_classes)
+        
+        print(X_bias)
+        print(self.theta_)
         
 
         for epoch in range( self.n_epochs):
@@ -215,6 +221,8 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
         return y_one_hot
 
+    
+
 
     """
         In :
@@ -252,3 +260,12 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         pass
     
     
+
+
+
+x = np.array([[0,1,1,0,1,0,1],[0,0,0,1,1,0,1]])
+y = np.array([1,2])
+sc = SoftmaxClassifier()
+sc.fit(x,y)
+
+
