@@ -77,8 +77,8 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
         self.theta_= np.random.rand(self.nb_feature + 1, self.nb_classes)
         
-        print(X_bias)
-        print(self.theta_)
+        #print(X_bias)
+        #print(self.theta_)
         
 
         for epoch in range( self.n_epochs):
@@ -236,7 +236,26 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
     """
     
     def _softmax(self,z):
-        pass
+        #print("z = ")
+        #print(z)
+        exponentials = np.exp(z)
+        #print("exponentials")
+        #print(exponentials)
+        totals = np.sum(exponentials,axis=1)
+        #print("totals before division")
+        #print(totals)
+
+        totals = np.divide(np.ones(totals.shape), totals)
+        #print("totals after division:")
+        #print(totals)
+
+        p = (exponentials.T * totals).T
+        #print("p = ")
+        #print(p)
+        
+        
+
+        return p
     
 
     """
@@ -268,4 +287,6 @@ y = np.array([1,2])
 sc = SoftmaxClassifier()
 sc.fit(x,y)
 
-
+z = np.array([[0.5,0.3],[0.3,0.2],[0.9,0.01]])
+p = sc._softmax(z)
+print(p)
