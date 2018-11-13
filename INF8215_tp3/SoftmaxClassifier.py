@@ -206,10 +206,14 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         y one-hot encoded
     """
 
-    
-    
     def _one_hot(self,y):
-        pass
+        # Initializing a 2d array with len(y) rows and nb_classes columns
+        y_one_hot = np.zeros((len(y),self.nb_classes))
+
+        for idx, val in enumerate(y):
+            y_one_hot[idx][val-1] = 1
+
+        return y_one_hot
 
 
     """
