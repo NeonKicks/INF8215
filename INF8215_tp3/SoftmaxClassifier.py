@@ -262,7 +262,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
     
 
 
-
+# Example for testing
 x = np.array([[0,1,1,0,1,0,1],[0,0,0,1,1,0,1]])
 y = np.array([1,2])
 sc = SoftmaxClassifier()
