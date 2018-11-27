@@ -83,14 +83,13 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
         for epoch in range( self.n_epochs):
 
-            # logits = 
-            # probabilities = 
+            logits = np.dot(X_bias, self.theta_)
+            probabilities = self._softmax(logits)
             
+            loss = self._cost_function(probabilities,y)
+            self.theta_ = self.theta_- (self.lr * self._get_gradient(X_bias, y, probabilities))
             
-            # loss =                
-            # self.theta_ = 
-            
-            # self.losses_.append(loss)
+            self.losses_.append(loss)
 
             if self.early_stopping:
                 pass
@@ -160,8 +159,8 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         probabilities = self.predict_proba(X,y)
         print("probabilities output by predict_proba:")
         print(probabilities)
-        maxProbIndex = np.argmax(probabilities, axis=1)
-        return y[maxProbIndex]
+        return np.argmax(probabilities, axis=1)
+        #return y[maxProbIndex]
 
     
 
@@ -205,11 +204,28 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         Ensure that probabilities are not equal to either 0. or 1. using self.eps
 
         Out:
-        Probabilities
+        cost (real number)
     """
     
     def _cost_function(self,probabilities, y ): 
-        pass
+        one_hot_y = self._one_hot(y)
+
+        probabilities[probabilities == 0.] = self.eps
+        probabilities[probabilities == 1.] = 1. - self.eps
+
+
+
+        # TODO: Verify if it should be log(l2) or just l2 being added
+        if(self.regularization == True):
+            l2_log = np.log(float(self.alpha) * np.sum(np.sum(np.square(self.theta_), axis=1)))
+            cost = l2_log
+        else:
+            cost = 0
+
+        log_loss = -(1./probabilities.shape[0]) * np.sum(np.multiply(one_hot_y, np.log(probabilities)))
+
+        #return log_loss
+        return log_loss + cost
     
 
     
@@ -232,9 +248,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         # Initializing a 2d array with len(y) rows and nb_classes columns
         y_one_hot = np.zeros((len(y),self.nb_classes))
 
-        for idx, val in enumerate(y):
-            y_one_hot[idx][val-1] = 1
-
+        y_one_hot[np.arange(len(y)),y] = 1
         return y_one_hot
 
     
@@ -242,7 +256,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
     """
         In :
-        Logits: (self.nb_features +1) * self.nb_classes
+        Logits: self.nb_examples * self.nb_classes
 
         Do:
         Compute softmax on logits
@@ -279,8 +293,26 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
     """
 
     def _get_gradient(self,X,y, probas):
+        yohe = self._one_hot(y)
         
-        pass
+        if (self.regularization == True):
+            print("theta_squred:")
+            print(np.square(self.theta_))
+            l2 = float(self.alpha) * np.sum(np.sum(np.square(self.theta_),axis=1))
+            print("l2:")
+            print(l2)
+            cost = l2
+        else:
+            cost = 0
+
+        #return 0 + (1./(X.shape[0]) * np.dot(X.T, np.subtract(probas,yohe)))
+        gradient = (1./(X.shape[0]) * np.dot(X.T, np.subtract(probas,yohe)))
+        print("gradient")
+        print(gradient)
+        regularized_gradient = gradient+cost
+        print("regularized gradient")
+        print(regularized_gradient)
+        return regularized_gradient
     
     
 
@@ -288,7 +320,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 # Example for testing
 x = np.array([[0,1,1,0,1,0,1],[0,0,0,1,1,0,1]])
 #y = np.array([1,2])
-y = np.array(["Arjun", "Alex"])
+y = np.array([0, 1])
 
 print("Starting data:")
 print("X")
@@ -298,8 +330,10 @@ print(y)
 
 sc = SoftmaxClassifier()
 sc.fit(x,y)
-predictions = sc.predict(x,y)
-print(predictions)
+log_loss = sc._cost_function(sc.predict_proba(x),y)
+#predictions = sc.predict(x,y)
+print("log_loss")
+print(log_loss)
 
 
 """
