@@ -122,8 +122,18 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         except AttributeError:
             raise RuntimeError("You must train classifer before predicting data!")
         
-        pass
+        X_bias = np.ones((X.shape[0], X.shape[1]+1))
+        X_bias[:,:-1] = X
+        print("X_bias:")
+        print(X_bias)
+        print("__________")
 
+        z = np.dot(X_bias, self.theta_)
+        print("logits:")
+        print(z)
+        print("__________")
+
+        return self._softmax(z)
 
         """
         In: 
@@ -146,6 +156,12 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         except AttributeError:
             raise RuntimeError("You must train classifer before predicting data!")
         pass
+
+        probabilities = self.predict_proba(X,y)
+        print("probabilities output by predict_proba:")
+        print(probabilities)
+        maxProbIndex = np.argmax(probabilities, axis=1)
+        return y[maxProbIndex]
 
     
 
@@ -236,24 +252,12 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
     """
     
     def _softmax(self,z):
-        #print("z = ")
-        #print(z)
         exponentials = np.exp(z)
-        #print("exponentials")
-        #print(exponentials)
         totals = np.sum(exponentials,axis=1)
-        #print("totals before division")
-        #print(totals)
 
         totals = np.divide(np.ones(totals.shape), totals)
-        #print("totals after division:")
-        #print(totals)
 
         p = (exponentials.T * totals).T
-        #print("p = ")
-        #print(p)
-        
-        
 
         return p
     
@@ -283,10 +287,23 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
 # Example for testing
 x = np.array([[0,1,1,0,1,0,1],[0,0,0,1,1,0,1]])
-y = np.array([1,2])
+#y = np.array([1,2])
+y = np.array(["Arjun", "Alex"])
+
+print("Starting data:")
+print("X")
+print(x)
+print("y")
+print(y)
+
 sc = SoftmaxClassifier()
 sc.fit(x,y)
+predictions = sc.predict(x,y)
+print(predictions)
 
+
+"""
 z = np.array([[0.5,0.3],[0.3,0.2],[0.9,0.01]])
 p = sc._softmax(z)
 print(p)
+"""
