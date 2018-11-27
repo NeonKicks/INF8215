@@ -217,14 +217,13 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
         # TODO: Verify if it should be log(l2) or just l2 being added
         if(self.regularization == True):
-            l2_log = np.log(float(self.alpha) * np.sum(np.sum(np.square(self.theta_), axis=1)))
-            cost = l2_log
+            l2 = float(self.alpha)/float(probabilities.shape[0]) * np.sum(np.sum(np.square(self.theta_), axis=1))
+            cost = l2
         else:
             cost = 0
 
         log_loss = -(1./probabilities.shape[0]) * np.sum(np.multiply(one_hot_y, np.log(probabilities)))
 
-        #return log_loss
         return log_loss + cost
     
 
@@ -296,22 +295,13 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         yohe = self._one_hot(y)
         
         if (self.regularization == True):
-            print("theta_squred:")
-            print(np.square(self.theta_))
-            l2 = float(self.alpha) * np.sum(np.sum(np.square(self.theta_),axis=1))
-            print("l2:")
-            print(l2)
+            l2 = float(self.alpha)/float(X.shape[0]) * np.sum(np.sum(np.square(self.theta_),axis=1))
             cost = l2
         else:
             cost = 0
 
-        #return 0 + (1./(X.shape[0]) * np.dot(X.T, np.subtract(probas,yohe)))
         gradient = (1./(X.shape[0]) * np.dot(X.T, np.subtract(probas,yohe)))
-        print("gradient")
-        print(gradient)
-        regularized_gradient = gradient+cost
-        print("regularized gradient")
-        print(regularized_gradient)
+        regularized_gradient = gradient + cost
         return regularized_gradient
     
     
