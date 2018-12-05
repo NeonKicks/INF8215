@@ -204,14 +204,9 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
     def score(self, X, y=None):
         self.regulariation = False
         predictions = self.predict(X)
-        correct_answers = np.sum(predictions[predictions==y])/len(predictions)
 
-        log_loss = self._cost_function(self.predict_proba(X), y=y)
+        return self._cost_function(self.predict_proba(X), y=y)
         
-        #self.regularization = True
-
-        return correct_answers, log_loss
-    
 
     """
         Private methods, their names begin with an underscore
