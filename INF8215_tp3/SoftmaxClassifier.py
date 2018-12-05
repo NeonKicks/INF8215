@@ -68,26 +68,18 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         self.losses_ = []
 
         self.nb_feature = X.shape[1]
-        print("nb_feature = " + str(self.nb_feature))
         self.nb_classes = len(np.unique(y))
-        print("nb_classes = " + str(self.nb_classes))
 
         
 
         X_bias = np.ones((X.shape[0], X.shape[1]+1))
         X_bias[:,:-1] = X
 
-        print("X_bias.shape[0] = " + str(X_bias.shape[0]))
-        print("X_bias.shape[1] = " + str(X_bias.shape[1]))
 
 
         self.theta_= np.random.rand(self.nb_feature + 1, self.nb_classes)
-        print("theta.shape[0] = " + str(self.theta_.shape[0]))
-        print("theta.shape[1] = " + str(self.theta_.shape[1]))
 
         
-        #print(X_bias)
-        #print(self.theta_)
         
 
         for epoch in range( self.n_epochs):
@@ -117,8 +109,8 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
             # If it is setup for early stopping, stop when log loss crosses threshold
             if self.early_stopping == True:
                     if(len(self.losses_) > 1):
-                        print("Var = " + str(self.losses_[-2] - self.losses_[-1]))
-                        if abs(self.losses_[-2] - self.losses_[-1]) < self.threshold:
+                        #if abs(self.losses_[-2] - self.losses_[-1]) < self.threshold:
+                        if self.losses_[-2] - self.losses_[-1] < self.threshold:
                             print("early stopping at epoch " + str(epoch))
                             break
 
@@ -323,35 +315,3 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         return gradient + l2
     
     
-"""
-sc = SoftmaxClassifier()
-sc.nb_classes = 3
-y = np.array([0, 1, 0, 2, 2, 0, 1, 0, 1])
-print(y)
-print(sc._one_hot(y))
-"""
-
-
-"""
-# Example for testing
-x = np.array([[0,1,1,0,1,0,1],[0,0,0,1,1,0,1],[0,0,0,0,0,0,1],[0,0,0,0,0,1,1],[1,0,0,0,1,1,1],[1,1,1,0,0,0,0],[0,1,0,1,0,1,0],[0,0,1,1,0,0,1],[1,0,0,0,0,1,0]])
-#y = np.array([1,2])
-y = np.array([0, 1, 0, 2, 2, 0, 1, 0, 1])
-
-print("Starting data:")
-print("X")
-print(x)
-print("y")
-print(y)
-
-sc = SoftmaxClassifier()
-sc.fit(x,y)
-"""
-
-
-
-"""
-z = np.array([[0.5,0.3],[0.3,0.2],[0.9,0.01]])
-p = sc._softmax(z)
-print(p)
-"""

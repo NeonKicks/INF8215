@@ -23,12 +23,11 @@ X_test = s.transform(X_test)
 from SoftmaxClassifier import SoftmaxClassifier
 
 # import the custom classifier
-cl = SoftmaxClassifier()
+cl = SoftmaxClassifier(alpha=10, regularization=True)
 
 # train on X_train and not on X_test to avoid overfitting
 train_p = cl.fit_predict(X_train,y_train)
 test_p = cl.predict(X_test)
-#print(cl.score(X_test,y_test))
 
 
 
@@ -39,3 +38,11 @@ from sklearn.metrics import precision_recall_fscore_support
 # display precision, recall and f1-score on train/test set
 print("train : "+ str(precision_recall_fscore_support(y_train, train_p,average = "macro")))
 print("test : "+ str(precision_recall_fscore_support(y_test, test_p,average = "macro")))
+
+
+"""
+import matplotlib.pyplot as plt
+
+plt.plot(cl.losses_)
+plt.show()
+"""
