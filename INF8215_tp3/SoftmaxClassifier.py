@@ -92,10 +92,6 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
             # Adjut theta
             self.theta_ = self.theta_- (np.multiply(self.lr, self._get_gradient(X_bias, y, probabilities)))
 
-            # TODO: Ajuster pour le fait que une des colonnes de theta est artificielle. 
-            #   (gradient dans la colonne est de 0, ou la rangée de theat est de 0, ou de quoi du genre...?)
-            # self.theta_[:-1,:] = 0
-
             # Function to allow pausing between interations
             if self.pause == True:
                     print("pause next loop? y/n")
@@ -306,6 +302,10 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
             l2 = 0
 
         gradient = np.multiply(1./(X.shape[0]), np.dot(X.T, np.subtract(probas,yohe)))
-        return gradient + l2
+        
+        # Avoid regularizing the bias factor
+        gradient[:-1,:] = np.add(gradient, l2)[:-1,:]
+
+        return gradient
     
     
