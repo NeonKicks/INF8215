@@ -298,14 +298,14 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         
         if (self.regularization == True):
             l2 = np.multiply(float(self.alpha)/(float(X.shape[0])), (self.theta_))
+
+            # Replace last row of l2 by zeros to avoid regularizing the bias factor (on the last row of the gradient)
+            l2[-1] = np.zeros(l2.shape[1])
         else:
             l2 = 0
 
         gradient = np.multiply(1./(X.shape[0]), np.dot(X.T, np.subtract(probas,yohe)))
-        
-        # Avoid regularizing the bias factor
-        gradient[:-1,:] = np.add(gradient, l2)[:-1,:]
 
-        return gradient
+        return gradient + l2
     
     
