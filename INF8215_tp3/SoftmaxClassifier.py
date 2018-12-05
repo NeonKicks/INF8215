@@ -3,8 +3,8 @@ import numpy as np
 
 
 class SoftmaxClassifier(BaseEstimator, ClassifierMixin):  
-    """A softmax classifier"""
 
+    """A softmax classifier"""
     def __init__(self, lr = 0.1, alpha = 100, n_epochs = 1000, eps = 1.0e-5,threshold = 1.0e-10 , regularization = True, early_stopping = True):
        
         """
@@ -30,7 +30,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
 
     """
-        Public methods, can be called by the user
+        -==========================- Public methods, can be called by the user -==========================-
         To create a custom estimator in sklearn, we need to define the following methods:
         * fit
         * predict
@@ -58,10 +58,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
         Out:
         self, in sklearn the fit method returns the object itself
-
-
     """
-
     def fit(self, X, y=None):
         
         prev_loss = np.inf
@@ -133,7 +130,6 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         Out:
         Predicted probabilities
     """
-
     def predict_proba(self, X, y=None):
         try:
             getattr(self, "theta_")
@@ -147,7 +143,8 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
         return self._softmax(z)
 
-        """
+
+    """
         In: 
         X without bias
 
@@ -160,8 +157,6 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         Out:
         Predicted classes
     """
-
-    
     def predict(self, X, y=None):
         try:
             getattr(self, "theta_")
@@ -179,6 +174,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         return self.predict(X,y)
 
 
+
     """
         In : 
         X set of examples (without bias term)
@@ -192,7 +188,6 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         log loss between prediction and true labels
 
     """    
-
     def score(self, X, y=None):
         self.regulariation = False
         predictions = self.predict(X)
@@ -201,7 +196,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         
 
     """
-        Private methods, their names begin with an underscore
+        -==========================- Private methods, their names begin with an underscore -==========================-
     """
 
     """
@@ -219,7 +214,6 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         Out:
         cost (real number)
     """
-    
     def _cost_function(self,probabilities, y ): 
         one_hot_y = self._one_hot(y)
 
@@ -227,8 +221,6 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         probabilities[probabilities == 1.] = 1. - self.eps
 
 
-
-        # TODO: Verify if it should be log(l2) or just l2 being added
         if(self.regularization == True):
             l2 = np.multiply(float(self.alpha)/float(probabilities.shape[0]), np.sum(np.square(self.theta_)))
         else:
@@ -254,7 +246,6 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         Out:
         y one-hot encoded
     """
-
     def _one_hot(self,y):
         # Initializing a 2d array with len(y) rows and nb_classes columns
         y_one_hot = np.zeros((len(y),self.nb_classes))
@@ -275,7 +266,6 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         Out:
         Probabilities
     """
-    
     def _softmax(self,z):
         exponentials = np.exp(z)
         totals = np.sum(exponentials,axis=1)
@@ -286,6 +276,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
 
         return p
     
+
 
     """
         In:
@@ -302,7 +293,6 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         Gradient
 
     """
-
     def _get_gradient(self,X,y, probas):
         yohe = self._one_hot(y)
         
