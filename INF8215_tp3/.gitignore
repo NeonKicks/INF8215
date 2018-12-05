@@ -5,3 +5,5 @@ data_processing_tutorial_en.ipynb
 .ipynb_checkpoints/
 *.jpeg
 .ipynb_checkpoints/
+*~
+__pycache__/
