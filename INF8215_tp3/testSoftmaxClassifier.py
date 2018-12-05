@@ -23,7 +23,7 @@ X_test = s.transform(X_test)
 from SoftmaxClassifier import SoftmaxClassifier
 
 # import the custom classifier
-cl = SoftmaxClassifier(alpha=10, regularization=True)
+cl = SoftmaxClassifier()
 
 # train on X_train and not on X_test to avoid overfitting
 train_p = cl.fit_predict(X_train,y_train)
@@ -40,9 +40,7 @@ print("train : "+ str(precision_recall_fscore_support(y_train, train_p,average =
 print("test : "+ str(precision_recall_fscore_support(y_test, test_p,average = "macro")))
 
 
-"""
 import matplotlib.pyplot as plt
 
 plt.plot(cl.losses_)
 plt.show()
-"""

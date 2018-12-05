@@ -307,7 +307,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         yohe = self._one_hot(y)
         
         if (self.regularization == True):
-            l2 = np.multiply(float(self.alpha)/(float(X.shape[0])), np.sum(self.theta_))
+            l2 = np.multiply(float(self.alpha)/(float(X.shape[0])), (self.theta_))
         else:
             l2 = 0
 
