@@ -68,45 +68,59 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         self.losses_ = []
 
         self.nb_feature = X.shape[1]
+        print("nb_feature = " + str(self.nb_feature))
         self.nb_classes = len(np.unique(y))
+        print("nb_classes = " + str(self.nb_classes))
 
         
 
         X_bias = np.ones((X.shape[0], X.shape[1]+1))
         X_bias[:,:-1] = X
 
+        print("X_bias.shape[0] = " + str(X_bias.shape[0]))
+        print("X_bias.shape[1] = " + str(X_bias.shape[1]))
+
 
         self.theta_= np.random.rand(self.nb_feature + 1, self.nb_classes)
+        print("theta.shape[0] = " + str(self.theta_.shape[0]))
+        print("theta.shape[1] = " + str(self.theta_.shape[1]))
+
         
         #print(X_bias)
         #print(self.theta_)
         
 
         for epoch in range( self.n_epochs):
+            # Do matrix product of X_bias and self.theta_
             logits = np.dot(X_bias, self.theta_)
-            probabilities = self._softmax(logits)
             
-            #print("_______________________________________________________")
-            #print("old theta :")
-            #print(self.theta_)
+            # Calculate probabilities with softmax function
+            probabilities = self._softmax(logits)
+           
+            # Calculate log loss
             loss = self._cost_function(probabilities,y)
+
+            # Adjut theta
             self.theta_ = self.theta_- (np.multiply(self.lr, self._get_gradient(X_bias, y, probabilities)))
-            #print("new theta :")
-            #print(self.theta_)
-            #print("_______________________________________________________")
+
+            # Function to allow pausing between interations
             if self.pause == True:
-                    #print("pause next loop? y/n")
+                    print("pause next loop? y/n")
                     answer = input()
                     if(answer == "n"):
                             self.pause = False
 
-            
+            # Add log loss to list of log losses
             self.losses_.append(loss)
 
+    
+            # If it is setup for early stopping, stop when log loss crosses threshold
             if self.early_stopping == True:
-                    if len(self.losses_) > 1 and self.losses_[-2] - self.losses_[-1] < self.threshold:
-                        #print("epoch = " + str(epoch))
-                        break
+                    if(len(self.losses_) > 1):
+                        print("Var = " + str(self.losses_[-2] - self.losses_[-1]))
+                        if abs(self.losses_[-2] - self.losses_[-1]) < self.threshold:
+                            print("early stopping at epoch " + str(epoch))
+                            break
 
         return self
 
@@ -135,15 +149,9 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
             raise RuntimeError("You must train classifer before predicting data!")
         
         X_bias = np.ones((X.shape[0], X.shape[1]+1))
-        X_bias[:,1:] = X
-        #print("X_bias:")
-        #print(X_bias)
-        #print("__________")
+        X_bias[:,:-1] = X
 
         z = np.dot(X_bias, self.theta_)
-        #print("logits:")
-        #print(z)
-        #print("__________")
 
         return self._softmax(z)
 
@@ -170,10 +178,7 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         pass
 
         probabilities = self.predict_proba(X,y)
-        #print("probabilities output by predict_proba:")
-        #print(probabilities)
         return np.argmax(probabilities, axis=1)
-        #return y[maxProbIndex]
 
     
 
@@ -239,14 +244,12 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         # TODO: Verify if it should be log(l2) or just l2 being added
         if(self.regularization == True):
             l2 = np.multiply(float(self.alpha)/float(probabilities.shape[0]), np.sum(np.square(self.theta_)))
-            reg = l2
         else:
-            reg = 0
+            l2 = 0
 
         log_loss = np.multiply(-(1./probabilities.shape[0]), np.sum(np.multiply(one_hot_y, np.log(probabilities))))
-        #print("log_loss + reg = " + str(log_loss + reg))
 
-        return log_loss + reg
+        return log_loss + l2
     
 
     
@@ -317,17 +320,22 @@ class SoftmaxClassifier(BaseEstimator, ClassifierMixin):
         yohe = self._one_hot(y)
         
         if (self.regularization == True):
-            l2 = np.multiply(2 * float(self.alpha)/(float(X.shape[0])), np.sum(self.theta_))
-            reg = l2
+            l2 = np.multiply(float(self.alpha)/(float(X.shape[0])), np.sum(self.theta_))
         else:
-            reg = 0
+            l2 = 0
 
         gradient = np.multiply(1./(X.shape[0]), np.dot(X.T, np.subtract(probas,yohe)))
-        #print("gradient + reg = ")
-        #print(str(gradient + reg))
-        return gradient + reg
+        return gradient + l2
     
     
+"""
+sc = SoftmaxClassifier()
+sc.nb_classes = 3
+y = np.array([0, 1, 0, 2, 2, 0, 1, 0, 1])
+print(y)
+print(sc._one_hot(y))
+"""
+
 
 """
 # Example for testing

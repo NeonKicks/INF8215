@@ -23,7 +23,7 @@ X_test = s.transform(X_test)
 from SoftmaxClassifier import SoftmaxClassifier
 
 # import the custom classifier
-cl = SoftmaxClassifier(regularization=False)
+cl = SoftmaxClassifier()
 
 # train on X_train and not on X_test to avoid overfitting
 train_p = cl.fit_predict(X_train,y_train)
