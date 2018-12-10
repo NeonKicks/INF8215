@@ -70,12 +70,9 @@ def parse_breed(text):
     
 
 
-############## Pipelines ####################
+# ============================= Pipeline =============================
 
-
-
-
-##### Component pipeline #######
+# ------------------------ Component pipeline ------------------------
 pipeline_sex = Pipeline([
         ("sex", TransformationWrapper( transformation = parse_sex)),
         ("encode", LabelEncoderP()),
@@ -85,7 +82,7 @@ pipeline_fixed = Pipeline([
         ("encode", LabelEncoderP()),
     ])
 
-##### Column modifiers #######
+# ------------------------ Columns modifiers ------------------------
 pipeline_age = Pipeline([
         ("age_imputer", SimpleImputer(strategy = 'constant', fill_value = 'Unknown years')),
         ("age_converter", TransformationWrapper(transformation = parse_age)),
@@ -106,7 +103,7 @@ pipeline_sex_state = Pipeline([
 
 
 
-####### Full pipeline #########
+# ------------------------ Full pipeline ------------------------
 full_pipeline = ColumnTransformer([
         ("age", pipeline_age, ["AgeuponOutcome"]),
         ("type", pipeline_type, ["AnimalType"]),
@@ -135,8 +132,12 @@ print(x_train["SexuponOutcome"].value_counts()/len(x_train))
 print(x_train["Breed"].value_counts()/len(x_train))
 
 
+# Actual Transformation calls start here
+# X_dataframe = pd.DataFrame(X_data, columns = column_names)
+# X_train, X_test= train_test_split(X_dataframe, test_size=0.2, random_state=42)
+# X_train, X_test = X_train.reset_index(drop = True), X_test.reset_index(drop = True)
 
-#full_pipeline_columns = ["age","type","sex","fixed"]
+#column_names = [] = ["age","type","sex","fixed"]
 #X_train = pd.DataFrame(full_pipeline.fit_transform(x_train), columns = full_pipeline_columns)
 #print(X_train.head())
 
