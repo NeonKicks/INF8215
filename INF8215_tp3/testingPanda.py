@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+from random import random
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
@@ -10,24 +11,29 @@ from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.compose import ColumnTransformer
 
 
-def parse_sex(text):
+# Redistribute "Unknown" sexes uniformly across the four known categories
+def parse_unknown_sex(text):
     if text == "Unknown":
-        return text
-    else:
-        _, sex = text.split(" ")
-        return sex
+        rand = random()
+        if rand <= 0.141578:
+            return "Intact Female"
+        elif rand <= 0.283680:
+            return "Intact Male"
+        elif rand <= 0.623882:
+            return "Spayed Female"
+        else:
+            return "Neutered Male"
+
+def parse_sex(text):
+    _, sex = text.split(" ")
+    return sex
 
 def parse_fixed(text):
-    if text == "Unknown":
-        return text
-        
     fixed, _ = text.split(" ")
     if fixed == "Intact":
-        return "Not fixed"
+        return fixed
     elif fixed == "Spayed" or fixed == "Neutered":
         return "Fixed"
-    else:
-        return fixed
 
 def parse_age(text):
     if text == "Unknown years":
@@ -43,7 +49,7 @@ def parse_age(text):
     elif "day" in resolution:
         return float(number) / 365.
     else:
-        print("Neither, days, weekd, months, nor years")
+        print("Neither, days, weeks, months, nor years")
 
 def parse_mix(text):
     # Check if 'Breed' contains a '/'
@@ -90,10 +96,10 @@ pipeline_type = Pipeline([
         ("encode", LabelEncoderP()),
     ])
 pipeline_sex_state = Pipeline([
-        ("sex_imputer", SimpleImputer(strategy = 'constant', fill_value = 'Unknown')),
+        ("sex_imputer", TransformationWrapper(transformation = parse_unknown_sex)),
         ('feats', FeatureUnion([
-            ('certain', pipeline_sex), 
-            ('positif', pipeline_fixed),
+            ('sex', pipeline_sex), 
+            ('fixed', pipeline_fixed),
         ])),
     ])
 #pipeline_breed = Pipeline()
