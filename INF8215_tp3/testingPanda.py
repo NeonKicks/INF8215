@@ -93,13 +93,16 @@ pipeline_type = Pipeline([
         ("encode", LabelEncoderP()),
     ])
 pipeline_sex_state = Pipeline([
+        ("unknown_imputer", SimpleImputer(strategy='constant', fill_value = 'Unknown')),
         ("sex_imputer", TransformationWrapper(transformation = parse_unknown_sex)),
         ('feats', FeatureUnion([
             ('sex', pipeline_sex), 
             ('fixed', pipeline_fixed),
         ])),
     ])
-#pipeline_breed = Pipeline()
+pipeline_breed = Pipeline([
+
+    ])
 
 
 
