@@ -15,14 +15,14 @@ from sklearn.compose import ColumnTransformer
 def parse_unknown_sex(text):
     if text == "Unknown":
         rand = random()
-        if rand <= 0.141578:
-            return "Intact Female"
-        elif rand <= 0.283680:
-            return "Intact Male"
-        elif rand <= 0.623882:
-            return "Spayed Female"
-        else:
+        if rand <= 0.381471:
             return "Neutered Male"
+        elif rand <= 0.725532:
+            return "Spayed Female"
+        elif rand <= 0.863039:
+            return "Intact Male"
+        else:
+            return "Intact Female"
 
 def parse_sex(text):
     _, sex = text.split(" ")
