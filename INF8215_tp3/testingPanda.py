@@ -5,13 +5,16 @@ from random import random
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import OneHotEncoder
 from preprocessing import TransformationWrapper
 from preprocessing import LabelEncoderP
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.compose import ColumnTransformer
 
 
-# Redistribute "Unknown" sexes uniformly across the four known categories
+
+
+# Redistribute "Unknown" sexes across the four known categories
 def parse_unknown_sex(text):
     if text == "Unknown":
         rand = random()
@@ -23,6 +26,8 @@ def parse_unknown_sex(text):
             return "Intact Male"
         else:
             return "Intact Female"
+    else:
+        return text
 
 def parse_sex(text):
     _, sex = text.split(" ")
@@ -69,12 +74,13 @@ def parse_breed(text):
     parsed_text = text.split(" ")
     
 
+    
 
 # ============================= Pipeline =============================
 
 # ------------------------ Component pipeline ------------------------
 pipeline_sex = Pipeline([
-        ("sex", TransformationWrapper( transformation = parse_sex)),
+        ("gender", TransformationWrapper( transformation = parse_sex)),
         ("encode", LabelEncoderP()),
     ])
 pipeline_fixed = Pipeline([
@@ -93,15 +99,16 @@ pipeline_type = Pipeline([
         ("encode", LabelEncoderP()),
     ])
 pipeline_sex_state = Pipeline([
-        ("unknown_imputer", SimpleImputer(strategy='constant', fill_value = 'Unknown')),
-        ("sex_imputer", TransformationWrapper(transformation = parse_unknown_sex)),
+        ("sextual_imputer", SimpleImputer(strategy = 'constant', fill_value = 'Unknown')),
+        ("unknown_imputer", TransformationWrapper(transformation = parse_unknown_sex)),
         ('feats', FeatureUnion([
-            ('sex', pipeline_sex), 
             ('fixed', pipeline_fixed),
+            ('gender', pipeline_sex), 
         ])),
     ])
 pipeline_breed = Pipeline([
-
+        ("breed_imputer", SimpleImputer(strategy = 'constant', fill_value = 'Unknown')),
+        ("encode",OneHotEncoder(categories = 'auto', sparse = False)),
     ])
 
 
@@ -111,7 +118,7 @@ full_pipeline = ColumnTransformer([
         ("age", pipeline_age, ["AgeuponOutcome"]),
         ("type", pipeline_type, ["AnimalType"]),
         ("sex", pipeline_sex_state, ["SexuponOutcome"]),
-        #("breed", pipeline_breed, ["Breed"]),
+        ("breed", pipeline_breed, ["Breed"]),
     ])
 
 
@@ -140,9 +147,9 @@ print(x_train["Breed"].value_counts()/len(x_train))
 # X_train, X_test= train_test_split(X_dataframe, test_size=0.2, random_state=42)
 # X_train, X_test = X_train.reset_index(drop = True), X_test.reset_index(drop = True)
 
-#column_names = [] = ["age","type","sex","fixed"]
-#X_train = pd.DataFrame(full_pipeline.fit_transform(x_train), columns = full_pipeline_columns)
-#print(X_train.head())
+#column_names = ["age","type","sex","fixed"]
+X_train = pd.DataFrame(full_pipeline.fit_transform(x_train))  #, columns = column_names)
+print(X_train.head())
 
 
 
@@ -159,25 +166,36 @@ age_train.columns = ["age"]
 # Fix missing data in AgeuponOutcome column
 age_imputer2 = SimpleImputer(missing_values=0.0, strategy='mean')
 age_train["age"] = age_imputer2.fit_transform(age_train["age"].values.reshape(-1,1))
+"""
 
-
-
-
+"""
+print(x_train.isnull().sum())
+print(x_train.head())
 
 ###### 'sex' #######
 # Fix missing data in SexuponOutcome column
 sextual_imputer = SimpleImputer(strategy = 'constant', fill_value = 'Unknown')
 x_train["SexuponOutcome"] = sextual_imputer.fit_transform(x_train["SexuponOutcome"].values.reshape(-1,1))
+sex_train = x_train.apply(lambda row: pd.Series(  parse_unknown_sex(row["SexuponOutcome"])  ), axis = 1  )
 
+print(sex_train)
+
+print(x_train.isnull().sum())
+print(x_train.head())
+"""
+
+"""
 # Split 'SexuponOutcome' into 'sex' and 'fixed'
 sex_train = x_train.apply(lambda row: pd.Series(  parse_sex(row["SexuponOutcome"])  ), axis = 1  )
 fixed_train = x_train.apply(lambda row: pd.Series(  parse_fixed(row["SexuponOutcome"])  ), axis = 1  )
 
 sex_train.columns = ["sex"]
 fixed_train.columns = ["fixed"]
+"""
 
 
 
+"""
 new_columns = pd.concat([sex_train, fixed_train, age_train], axis = 1)
 x_train = x_train.drop(columns = ["SexuponOutcome","AgeuponOutcome"])
 x_train = pd.concat([x_train, pd.DataFrame(new_columns)], axis = 1)
